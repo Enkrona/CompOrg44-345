@@ -1,4 +1,4 @@
-This is all of the homework assignments that I have procured. All of these come directly from:
+This is all of the assignments/projects that I have procured. All of these come directly from:
 
 Kann, Charles W., "Introduction To MIPS Assembly Language Programming" (2015). Gettysburg College Open Educational Resources.
 2
