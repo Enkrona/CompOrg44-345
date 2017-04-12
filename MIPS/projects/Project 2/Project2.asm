@@ -64,11 +64,12 @@ main:
 		jal PromptStringIn
 		
 		la $a0, input 			#  Loading address of input to $a0
-		move $s7, $a0 			#  storing in $s7 for safe keeping 
-		li $s6, 0 			#  Counter used to store current value of character we are on
-		b PlayString
-		
+		move $s5, $a0			
+		lb $s6, ($a0)			#  loading value at $a0 into $s6
+		move $a0, $s6			
+		b musicPlayString
 	
+
 	endOfProject:
 		jal Exit	#  end of program 
 		
@@ -106,7 +107,7 @@ main:
 	move $s0, $a0 	# Moving var back to sa safe register due to MIPS Standards for syscall of Music
 	
 	#  Random num generation 
-	li $a0, 58	#  Lower bound for random num
+	li $a0, 58	#  Seed for random num generation
 	li $a1, 107 	#  Upper bound for random num
 	li $v0, 42
 	syscall 
@@ -135,11 +136,13 @@ main:
 	# output: none
 	# returns: none
 	# side-effects: plays the notes corresponding to each character
-	lb $s6, 0($a0)		#  Loading the content of the word at memory address $a0 + 0
-	beqz $s6, endOfProject	#  If the value is 0, then exit program 
-	addi $a0, $a0, 1	#  Add/increment the address by 1
-	move $a0, $s6		#  moving the ASCII value at $s6 to $a0 for the subprogram PlayString
+	addi $s5, $s5, 1	#  Add/increment the address by 1
+	beqz $s5, endOfProject	#  If the value is 0, then exit program 
+	lb $a0, ($s5)		#  load the value from $s5 to $a0 for use in playstringmusic
 	
+	b musicPlayString
+	
+	musicPlayString: 
 	#  Prepare the corresponding registers for sounds 
 	#  Sound/Music Generation
 	#  $a0 is already prepared above
@@ -149,8 +152,7 @@ main:
 	li $v0, 33	#  Iniating playback
 	syscall 
 		
-	b PlayString		#  Branching to PlayString to increment loop 
-		
+	b PlayString		#  Branching to PlayString to increment loop 	
 
 .data
 promptScaleStart: .asciiz "Please enter starting point for scale (from 0-127): "
